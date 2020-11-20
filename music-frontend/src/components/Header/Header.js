@@ -1,10 +1,16 @@
 import React from 'react';
-import {Navbar, Nav, Container} from 'react-bootstrap';
+import {Navbar, Nav, Container, Dropdown} from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../store/actions/userActions';
 
 const Header = () => {
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user.userInfo);
+
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
 
   return (
     <div>
@@ -18,7 +24,16 @@ const Header = () => {
                 :
                 <>
                   <Nav.Link as={Link} to={'/track_history'} className='pr-4'>Track History</Nav.Link>
-                  <Nav.Link>Hello, {user.user.username}</Nav.Link>
+                  <Dropdown>
+                    <Dropdown.Toggle variant="primary" id="dropdown-basic">
+                      Hello, {user.user.username}
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                      <Dropdown.Item href="#/my-profile">My Profile</Dropdown.Item>
+                      <Dropdown.Item onClick={logoutHandler}>Log out</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
                 </>
               }
             </Nav>

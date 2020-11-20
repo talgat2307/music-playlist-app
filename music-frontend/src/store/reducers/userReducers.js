@@ -1,4 +1,5 @@
 import {
+  LOGOUT_USER,
   USER_LOGIN_FAILURE,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -25,6 +26,8 @@ const userReducers = (state = initialState, action) => {
       return { ...state, loading: false, userInfo: action.userInfo };
     case USER_LOGIN_FAILURE:
       return { ...state, loginError: action.error };
+    case LOGOUT_USER:
+      return {...state, userInfo: null}
     default:
       return state;
   }

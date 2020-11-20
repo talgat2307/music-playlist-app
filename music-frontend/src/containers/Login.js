@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogin } from '../store/actions/userActions';
 
-const Login = (props) => {
+const Login = () => {
 
   const [user, setUser] = useState({
     username: '',
@@ -12,7 +12,6 @@ const Login = (props) => {
   });
 
   const dispatch = useDispatch();
-  const userInfo = useSelector(state => state.user.userInfo);
   const error = useSelector(state => state.user.loginError);
 
   const inputChangeHandler = (e) => {
@@ -26,7 +25,7 @@ const Login = (props) => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(userLogin(user, props));
+    dispatch(userLogin(user));
   };
 
   return (
@@ -34,7 +33,7 @@ const Login = (props) => {
       <Container>
         <Row className='justify-content-md-center'>
           <Col xs={12} md={6}>
-            <h2 className='text-center pb-4'>Login</h2>
+            <h3 className='text-center pb-4'>Login</h3>
             {error && <Alert variant='danger'>{error.response.data.error}</Alert> }
             <Form onSubmit={formSubmitHandler}>
               <Form.Group controlId='username'>

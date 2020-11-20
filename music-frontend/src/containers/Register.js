@@ -3,7 +3,7 @@ import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/actions/userActions';
 
-const Register = (props) => {
+const Register = () => {
   const [user, setUser] = useState({
     username: '',
     password: '',
@@ -23,7 +23,7 @@ const Register = (props) => {
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(registerUser(user, props));
+    dispatch(registerUser(user));
   };
 
   const getFieldError = (fieldName) => {

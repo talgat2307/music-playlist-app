@@ -2,10 +2,19 @@ const router = require('express').Router();
 const TrackHistory = require('../model/TrackHistory');
 const auth = require('../middleware/auth');
 
-
 router.get('/', auth, async (req, res) => {
   try {
-    const track_history = await TrackHistory.find({user: req.user._id}).sort({datetime: 'desc'}).populate('track');
+    const track_history = await TrackHistory.find({ user: req.user._id }).
+      sort({ datetime: 'desc' }).
+      populate({
+        path: 'track',
+        populate: {
+          path: 'album',
+          populate: {
+            path: 'artist',
+          },
+        },
+      });
     res.send(track_history);
   } catch (e) {
     res.status(500).send(e);

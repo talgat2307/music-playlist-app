@@ -1,4 +1,6 @@
+import { push } from 'connected-react-router';
 import {
+  LOGOUT_USER,
   USER_LOGIN_FAILURE,
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -20,13 +22,13 @@ const userRegisterFailure = (error) => {
   return { type: USER_REGISTER_FAILURE, error };
 };
 
-export const registerUser = (userData, props) => {
+export const registerUser = (userData) => {
   return async dispatch => {
     dispatch(userRegisterRequest());
     try {
       await axiosApi.post('/users', userData);
       dispatch(userRegisterSuccess());
-      dispatch(props.history.push('/login'));
+      dispatch(push('/login'));
     } catch (e) {
       if (e.response && e.response.data) {
         dispatch(userRegisterFailure(e.response.data));
@@ -49,15 +51,31 @@ const userLoginFailure = (error) => {
   return { type: USER_LOGIN_FAILURE, error };
 };
 
-export const userLogin = (user, props) => {
+export const userLogin = (user) => {
   return async dispatch => {
     dispatch(userLoginRequest());
     try {
       const response = await axiosApi.post('/users/sessions', user);
       dispatch(userLoginSuccess(response.data));
-      dispatch(props.history.push('/'));
+      dispatch(push('/'));
     } catch (e) {
       dispatch(userLoginFailure(e));
     }
   };
+};
+
+const logoutUser = () => {
+  return {type: LOGOUT_USER};
+};
+
+export const logout = () => {
+  return async (dispatch, getState) => {
+
+    const token = getState().user.userInfo.user.token;
+    const headers = {'Authorization': token};
+
+    await axiosApi.delete('users/sessions', {headers});
+    dispatch(logoutUser());
+    dispatch(push('/'));
+  }
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch, BrowserRouter } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import './App.css';
 import Layout from './components/Layout/Layout';
 import Artists from './containers/Artists';
@@ -11,18 +11,16 @@ import TrackHistory from './containers/TrackHistory';
 
 const App = () => (
   <div className="App">
-    <BrowserRouter>
       <Layout>
         <Switch>
           <Route path={'/'} exact component={Artists}/>
           <Route path={'/albums'} component={Albums}/>
           <Route path={'/tracks'} component={Tracks}/>
-          <Route path={'/login'} component={Login} />
-          <Route path={'/register'} component={Register} />
-          <Route path={'/track_history'} component={TrackHistory} />
+          <Route path={'/login'} component={Login}/>
+          <Route path={'/register'} component={Register}/>
+          <Route path={'/track_history'} component={TrackHistory}/>
         </Switch>
       </Layout>
-    </BrowserRouter>
   </div>
 );
 
