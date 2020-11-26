@@ -8,23 +8,29 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: [true, "Field username is required to fill"],
+    required: [true, 'Field username is required to fill'],
     unique: true,
     validate: {
       validator: async (value) => {
-        const user = await User.findOne({username: value});
+        const user = await User.findOne({ username: value });
         if (user) return false;
       },
-      message: (props) => `User " ${props.value} " already exists`
-    }
+      message: (props) => `User " ${props.value} " already exists`,
+    },
   },
   password: {
     type: String,
-    required: [true, "Field password is required to fill"],
+    required: [true, 'Field password is required to fill'],
   },
   token: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    required: true,
+    default: 'user',
+    enum: ['user', 'admin'],
   },
 });
 
@@ -43,7 +49,7 @@ UserSchema.set('toJSON', {
   },
 });
 
-UserSchema.methods.checkPassword = function(password) {
+UserSchema.methods.checkPassword = function (password) {
   return bcrypt.compare(password, this.password);
 };
 

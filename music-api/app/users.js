@@ -12,7 +12,10 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const user = new User(req.body);
+    const user = new User({
+      username: req.body.username,
+      password: req.body.password,
+    });
     user.generateToken();
     await user.save();
     res.send(user);
@@ -21,36 +24,35 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.post("/sessions", async (req, res) => {
-  const user = await User.findOne({username: req.body.username});
+router.post('/sessions', async (req, res) => {
+  const user = await User.findOne({ username: req.body.username });
   if (!user) {
-    return res.status(400).send({error: "Username not found"});
+    return res.status(400).send({ error: 'Username not found' });
   }
   const isMatch = await user.checkPassword(req.body.password);
   if (!isMatch) {
-    return res.status(400).send({error: "Password is wrong"});
+    return res.status(400).send({ error: 'Password is wrong' });
   }
 
   user.generateToken();
-  await user.save({validateBeforeSave: false});
+  await user.save({ validateBeforeSave: false });
 
-  res.send({user});
+  res.send({ user });
 });
 
 router.delete('/sessions', async (req, res) => {
   const token = req.get('Authorization');
-  const success = {message: 'Success'};
+  const success = { message: 'Success' };
 
   if (!token) return res.send(success);
-  const user = await User.findOne({token});
+  const user = await User.findOne({ token });
 
   if (!user) return res.send(success);
 
   user.generateToken();
-  user.save({validateBeforeSave: false});
+  user.save({ validateBeforeSave: false });
 
   return res.send(success);
 });
-
 
 module.exports = router;

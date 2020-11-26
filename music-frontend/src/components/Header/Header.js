@@ -23,6 +23,9 @@ const Header = () => {
               {!user ? <Nav.Link as={Link} to='/login'>Login</Nav.Link>
                 :
                 <>
+                  <Nav.Link as={Link} to={'/add-artist'} className='pr-4'>Add new artist</Nav.Link>
+                  <Nav.Link as={Link} to={'/add-album'} className='pr-4'>Add new album</Nav.Link>
+                  <Nav.Link as={Link} to={'/add-track'} className='pr-4'>Add new track</Nav.Link>
                   <Nav.Link as={Link} to={'/track_history'} className='pr-4'>Track History</Nav.Link>
                   <Dropdown>
                     <Dropdown.Toggle variant="primary" id="dropdown-basic">

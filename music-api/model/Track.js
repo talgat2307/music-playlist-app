@@ -14,7 +14,8 @@ const TrackSchema = new Schema({
     required: true,
   },
   length: Number,
-  number: Number
+  number: Number,
+  published: false
 });
 
 TrackSchema.plugin(idValidator);

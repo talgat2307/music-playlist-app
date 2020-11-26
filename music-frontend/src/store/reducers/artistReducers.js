@@ -1,15 +1,21 @@
 import {
+  ADD_ARTIST_FAILURE,
+  ADD_ARTIST_SUCCESS,
   ARTIST_FAILURE,
   ARTIST_LIST_FAILURE,
   ARTIST_LIST_REQUEST,
-  ARTIST_LIST_SUCCESS, ARTIST_REQUEST, ARTIST_SUCCESS,
+  ARTIST_LIST_SUCCESS,
+  ARTIST_REQUEST,
+  ARTIST_SUCCESS,
+  DELETE_ARTIST,
+  PUBLISH_ARTIST_SUCCESS,
 } from '../actionTypes';
+import { fetchArtistList } from '../actions/artistActions';
 
 const initialState = {
   loading: false,
   error: null,
   artistList: [],
-  allArtist: [],
   artist: {},
 };
 
@@ -26,6 +32,8 @@ const artistReducers = (state = initialState, action) => {
     case ARTIST_SUCCESS:
       return { ...state, loading: false, artist: action.artist };
     case ARTIST_FAILURE:
+      return { ...state, error: action.error };
+    case ADD_ARTIST_FAILURE:
       return { ...state, error: action.error };
     default:
       return state;

@@ -26,14 +26,17 @@ db.once('open', async () => {
       name: 'Eminem',
       information: 'Marshall Bruce Mathers III, known professionally as Eminem is an American rapper, songwriter, and record producer',
       image: 'eminem.jpg',
+      published: false
     }, {
       name: 'Imagine Dragons',
       information: 'Imagine Dragons is an American pop rock band from Las Vegas, Nevada',
       image: 'imagine_dragons.jpg',
+      published: false
     }, {
       name: 'Ed Sheeran',
       information: 'Edward Christopher Sheeran MBE  is an English singer, songwriter, musician, record producer, and actor',
       image: 'ed_sheeran.jpg',
+      published: false
     });
 
   const [albumOrigins, albumKamikaze, albumX] = await Album.create({
@@ -41,16 +44,19 @@ db.once('open', async () => {
     artist: artistImagineDragons._id,
     released_date: 2018,
     image: 'origins.jpg',
+    published: false
   }, {
     name: 'Kamikaze',
     artist: artistEminem._id,
     released_date: 2018,
     image: 'kamikaze.jpg',
+    published: false
   }, {
     name: 'X',
     artist: artistEdSheeran._id,
     released_date: 2014,
     image: 'x.jpg',
+    published: false
   });
 
   await Track.create({
@@ -58,11 +64,13 @@ db.once('open', async () => {
     name: 'Kamikaze',
     length: 3.36,
     number: 1,
+    published: false
   }, {
     album: albumKamikaze._id,
     name: 'Venom',
     length: 4.29,
     number: 2,
+    published: false
   }, {
     album: albumOrigins._id,
     name: 'Birds',
@@ -73,26 +81,31 @@ db.once('open', async () => {
     name: 'Bad Lier',
     length: 4.02,
     number: 2,
+    published: false
   }, {
     album: albumX._id,
     name: 'Photograph',
     length: 4.18,
     number: 1,
+    published: false
   }, {
     album: albumX._id,
     name: 'Thinking Out Loud',
     length: 4.21,
     number: 2,
+    published: false
   });
 
   await User.create({
-    username: 'Bill',
+    username: 'user',
     password: '001',
     token: nanoid(),
+    role: 'user'
   }, {
-    username: 'Tom',
+    username: 'admin',
     password: '001',
     token: nanoid(),
+    role: 'admin'
   });
 
   db.close();

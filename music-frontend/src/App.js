@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Layout from './components/Layout/Layout';
 import Artists from './containers/Artists';
@@ -8,20 +8,50 @@ import Tracks from './containers/Tracks';
 import Login from './containers/Login';
 import Register from './containers/Register';
 import TrackHistory from './containers/TrackHistory';
+import AddArtist from './containers/AddArtist';
+import AddAlbum from './containers/AddAlbum';
+import AddTrack from './containers/AddTrack';
+import { useSelector } from 'react-redux';
 
-const App = () => (
-  <div className="App">
+const ProtectedRout = ({isAllowed, redirectTo, ...props}) => {
+  return isAllowed ? <Route {...props} /> : <Redirect to={redirectTo} />
+};
+
+const App = () => {
+  const user = useSelector(state => state.user.userInfo);
+
+  return (
+    <div className="App">
       <Layout>
         <Switch>
           <Route path={'/'} exact component={Artists}/>
           <Route path={'/albums'} component={Albums}/>
           <Route path={'/tracks'} component={Tracks}/>
-          <Route path={'/login'} component={Login}/>
-          <Route path={'/register'} component={Register}/>
+          <ProtectedRout
+            path={'/login'}
+            component={Login}
+            isAllowed={!user}
+            redirectTo={'/'}
+          />
+          <ProtectedRout
+            path={'/register'}
+            component={Register}
+            isAllowed={!user}
+            redirectTo={'/'}
+          />
           <Route path={'/track_history'} component={TrackHistory}/>
+          <ProtectedRout
+            path={'/add-artist'}
+            component={AddArtist}
+            isAllowed={user && user.user.role === 'admin'}
+            redirectTo={'/login'}
+          />
+          <Route path={'/add-album'} component={AddAlbum}/>
+          <Route path={'/add-track'} component={AddTrack}/>
         </Switch>
       </Layout>
-  </div>
-);
+    </div>
+  );
+};
 
 export default App;

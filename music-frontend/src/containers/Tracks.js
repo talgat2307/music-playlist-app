@@ -1,15 +1,20 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTrackList } from '../store/actions/trackActions';
+import {
+  deleteSingleTrack,
+  fetchTrackList, publishTrack,
+} from '../store/actions/trackActions';
 import { Link } from 'react-router-dom';
 import { fetchArtist } from '../store/actions/artistActions';
 import { postTrackHistory } from '../store/actions/trackHistoryActions';
+import { Button } from 'react-bootstrap';
 
 const Tracks = ({ location }) => {
 
   const dispatch = useDispatch();
   const tracks = useSelector(state => state.track.trackList);
   const artist = useSelector(state => state.artist.artist);
+  const user = useSelector(state => state.user.userInfo);
 
   const params = new URLSearchParams(location.search);
   const queryId = params.get('album');
@@ -27,7 +32,19 @@ const Tracks = ({ location }) => {
   }, [album, dispatch]);
 
   const clickHandler = (id) => {
-    dispatch(postTrackHistory({track: id}));
+    if (user) {
+      dispatch(postTrackHistory({ track: id }));
+    }
+  };
+
+  const deleteHandler = (id) => {
+    dispatch(deleteSingleTrack(id));
+    dispatch(fetchTrackList(queryId));
+  };
+
+  const publishHandler = (id) => {
+    dispatch(publishTrack(id));
+    dispatch(fetchTrackList(queryId));
   };
 
   return (
@@ -41,11 +58,28 @@ const Tracks = ({ location }) => {
         </div>
       </div>
       <ul className='track'>
-        {tracks.map(track => {
+        {tracks && tracks.map(track => {
           return (
-            <li key={track._id} onClick={() => clickHandler(track._id)}>
-              <p>{track.number}. <strong>{track.name}</strong> {track.length} min
+            <li key={track._id}>
+              <p>
+                {track.number}. <strong onClick={() => clickHandler(
+                track._id)}>{track.name}</strong> {track.length} min
               </p>
+              {user && user.user.role === 'admin' ? track.published ?
+                <p className='published-track text-success'>Published</p>
+                :
+                <p className='published-track text-danger'>Unpublished</p> : ''}
+              {user && user.user.role === 'admin' ?
+                <>
+                  <Button
+                    onClick={() => publishHandler(track._id)}
+                    className='track-publish-btn'
+                    variant='success'>Publish</Button>
+                  <Button
+                    onClick={() => deleteHandler(track._id)}
+                    className='track-delete-btn'
+                    variant='danger'>Delete</Button>
+                </> : ''}
             </li>
           );
         })}

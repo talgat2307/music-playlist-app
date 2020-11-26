@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const auth = require('../middleware/auth');
+const permit = require('../middleware/permit');
 const Track = require('../model/Track');
 
 router.get('/', async (req, res) => {
@@ -24,7 +26,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', [auth, permit('admin', 'user')], async (req, res) => {
   const track = new Track(req.body);
 
   try {
@@ -32,6 +34,28 @@ router.post('/', async (req, res) => {
     res.send(track);
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+router.delete('/:id', [auth, permit('admin')], async (req, res) => {
+  try {
+    await Track.findByIdAndDelete(req.params.id);
+  } catch (e) {
+    res.status(403).send(e);
+  }
+});
+
+router.put('/:id', [auth, permit('admin')], async (req, res) => {
+  try {
+    await Track.update({ _id: req.params.id },
+      {
+        $set: {
+          published: true,
+        },
+      },
+    );
+  } catch (e) {
+    res.send(e);
   }
 });
 

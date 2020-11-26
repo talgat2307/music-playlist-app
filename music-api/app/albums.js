@@ -2,6 +2,8 @@ const router = require('express').Router();
 const multer = require('multer');
 const path = require('path');
 const { nanoid } = require('nanoid');
+const auth = require('../middleware/auth');
+const permit = require('../middleware/permit');
 const config = require('../config');
 const Album = require('../model/Album');
 
@@ -37,7 +39,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', [auth, permit('admin', 'user') ,upload.single('image')], async (req, res) => {
   const album = new Album(req.body);
   if (req.file) {
     album.image = req.file.filename;
@@ -48,6 +50,28 @@ router.post('/', upload.single('image'), async (req, res) => {
     res.send(album);
   } catch (e) {
     res.status(400).send(e);
+  }
+});
+
+router.delete('/:id', [auth, permit('admin')], async (req, res) => {
+  try {
+    await Album.findByIdAndDelete(req.params.id);
+  } catch (e) {
+    res.status(403).send(e);
+  }
+});
+
+router.put('/:id', [auth, permit('admin')], async (req, res) => {
+  try {
+    await Album.update({ _id: req.params.id },
+      {
+        $set: {
+          published: true,
+        },
+      },
+    );
+  } catch (e) {
+    res.send(e);
   }
 });
 

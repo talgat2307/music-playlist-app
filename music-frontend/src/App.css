@@ -11,7 +11,7 @@
   border-radius: 5px;
   padding: 5px;
   margin-bottom: 10px;
-  cursor: pointer;
+  position: relative;
 }
 
 .artist h4 {
@@ -20,7 +20,19 @@
 
 .artist img {
   border-radius: 3px;
+  cursor: pointer;
 }
+
+.artist-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.artist button {
+  margin-left: 10px;
+}
+
 
 .albumHeader {
   display: flex;
@@ -35,11 +47,25 @@
   border-radius: 5px;
   padding: 5px;
   margin-bottom: 10px;
+  position: relative;
+}
+
+.album img {
   cursor: pointer;
 }
 
 .album div {
   padding-left: 100px;
+}
+
+.album-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.album button {
+  margin-left: 10px;
 }
 
 .album img {
@@ -63,11 +89,16 @@
   padding: 0 5px;
   margin-bottom: 35px;
   list-style: none;
-  cursor: pointer;
+  position: relative;
+}
+
+.track li:hover {
+  color: dodgerblue;
 }
 
 .track strong {
   padding-right: 10px;
+  cursor: pointer;
 }
 
 .track p {
@@ -75,3 +106,32 @@
   padding: 0;
 }
 
+.track-publish-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 230px;
+}
+
+.track-delete-btn {
+  position: absolute;
+  bottom: 5px;
+  right: 150px;
+}
+
+.published {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+
+.published-album {
+  position: absolute;
+  right: 15px;
+  top: 10px;
+}
+
+.published-track {
+  position: absolute;
+  right: 15px;
+  bottom: 5px;
+}

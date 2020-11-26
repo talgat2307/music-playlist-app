@@ -17,6 +17,7 @@ const AlbumSchema = new Schema({
     required: true,
   },
   image: String,
+  published: false
 });
 
 AlbumSchema.plugin(idValidator);
