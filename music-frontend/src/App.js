@@ -39,15 +39,10 @@ const App = () => {
             isAllowed={!user}
             redirectTo={'/'}
           />
-          <Route path={'/track_history'} component={TrackHistory}/>
-          <ProtectedRout
-            path={'/add-artist'}
-            component={AddArtist}
-            isAllowed={user && user.user.role === 'admin'}
-            redirectTo={'/login'}
-          />
-          <Route path={'/add-album'} component={AddAlbum}/>
-          <Route path={'/add-track'} component={AddTrack}/>
+          <Route path={'/track_history'} component={TrackHistory} />
+          <Route path={'/add-artist'} component={AddArtist} />
+          <Route path={'/add-album'} component={AddAlbum} />
+          <Route path={'/add-track'} component={AddTrack} />
         </Switch>
       </Layout>
     </div>

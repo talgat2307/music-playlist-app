@@ -70,7 +70,7 @@ const addArtistFailure = (error) => {
 
 export const addArtist = (artist) => {
   return async (dispatch, getState) => {
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
     try {
       await axiosApi.post('/artists', artist, { headers });
@@ -89,7 +89,7 @@ const deleteArtist = (id) => {
 export const deleteSingleArtist = (id) => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     await axiosApi.delete(`/artists/${id}`, { headers });
@@ -104,10 +104,10 @@ const publishArtistSuccess = (id) => {
 export const publishArtist = (id) => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     await axiosApi.put(`/artists/${id}`, {}, { headers });
-    dispatch(publishArtistSuccess());
+    dispatch(publishArtistSuccess(id));
   };
 };

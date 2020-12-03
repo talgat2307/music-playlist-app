@@ -33,7 +33,7 @@ export const registerUser = (userData) => {
       if (e.response && e.response.data) {
         dispatch(userRegisterFailure(e.response.data));
       } else {
-        dispatch(userRegisterFailure({global: 'No internet'}))
+        dispatch(userRegisterFailure({ global: 'No internet' }));
       }
     }
   };
@@ -43,8 +43,8 @@ const userLoginRequest = () => {
   return { type: USER_LOGIN_REQUEST };
 };
 
-const userLoginSuccess = (userInfo) => {
-  return { type: USER_LOGIN_SUCCESS, userInfo };
+const userLoginSuccess = (user) => {
+  return { type: USER_LOGIN_SUCCESS, user };
 };
 
 const userLoginFailure = (error) => {
@@ -56,7 +56,7 @@ export const userLogin = (user) => {
     dispatch(userLoginRequest());
     try {
       const response = await axiosApi.post('/users/sessions', user);
-      dispatch(userLoginSuccess(response.data));
+      dispatch(userLoginSuccess(response.data.user));
       dispatch(push('/'));
     } catch (e) {
       dispatch(userLoginFailure(e));
@@ -65,17 +65,29 @@ export const userLogin = (user) => {
 };
 
 const logoutUser = () => {
-  return {type: LOGOUT_USER};
+  return { type: LOGOUT_USER };
 };
 
 export const logout = () => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
-    const headers = {'Authorization': token};
+    const token = getState().user.userInfo.token;
+    const headers = { 'Authorization': token };
 
-    await axiosApi.delete('users/sessions', {headers});
+    await axiosApi.delete('users/sessions', { headers });
     dispatch(logoutUser());
     dispatch(push('/'));
+  };
+};
+
+export const facebookLogin = data => {
+  return async dispatch => {
+    try {
+      const response = await axiosApi.post('/users/facebookLogin', data);
+      dispatch(userLoginSuccess(response.data));
+      dispatch(push('/'));
+    } catch (e) {
+      dispatch(userLoginFailure(e));
+    }
   }
 };

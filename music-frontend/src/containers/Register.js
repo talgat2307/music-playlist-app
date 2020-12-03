@@ -2,11 +2,15 @@ import React, { useState } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../store/actions/userActions';
+import FacebookLogin from '../components/FacebookLogin/FacebookLogin';
 
 const Register = () => {
   const [user, setUser] = useState({
     username: '',
+    displayName: '',
+    email: '',
     password: '',
+    avatarImage: ''
   });
 
   const dispatch = useDispatch();
@@ -21,9 +25,23 @@ const Register = () => {
     });
   };
 
+  const fileChangeHandler = (e) => {
+    const name = e.target.name;
+    const file = e.target.files[0];
+
+    setUser(prevState => ({ ...prevState, [name]: file }));
+  };
+
   const formSubmitHandler = (e) => {
     e.preventDefault();
-    dispatch(registerUser(user));
+
+    const formData = new FormData();
+
+    Object.keys(user).forEach(key => {
+      formData.append(key, user[key]);
+    });
+
+    dispatch(registerUser(formData));
   };
 
   const getFieldError = (fieldName) => {
@@ -56,6 +74,34 @@ const Register = () => {
                 <Form.Control.Feedback type={'invalid'}>{getFieldError('username')}</Form.Control.Feedback>
               </Form.Group>
 
+              <Form.Group controlId='displayName'>
+                <Form.Label>Display Name</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter display name'
+                  name='displayName'
+                  value={user.displayName}
+                  onChange={(e) => inputChangeHandler(e)}
+                  isInvalid={!!getFieldError('displayName')}
+                >
+                </Form.Control>
+                <Form.Control.Feedback type={'invalid'}>{getFieldError('username')}</Form.Control.Feedback>
+              </Form.Group>
+
+              <Form.Group controlId='email'>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type='text'
+                  placeholder='Enter email'
+                  name='email'
+                  value={user.email}
+                  onChange={(e) => inputChangeHandler(e)}
+                  isInvalid={!!getFieldError('email')}
+                >
+                </Form.Control>
+                <Form.Control.Feedback type={'invalid'}>{getFieldError('email')}</Form.Control.Feedback>
+              </Form.Group>
+
               <Form.Group controlId='password'>
                 <Form.Label>Password</Form.Label>
                 <Form.Control
@@ -70,9 +116,18 @@ const Register = () => {
                 <Form.Control.Feedback type={'invalid'}>{getFieldError('password')}</Form.Control.Feedback>
               </Form.Group>
 
+              <Form.Group controlId='avatarImage'>
+                <Form.Label>Avatar</Form.Label>
+                <Form.File
+                  name='avatarImage'
+                  onChange={fileChangeHandler}
+                />
+              </Form.Group>
+
               <Button type='submit' variant='primary'>
                 Sign Up
               </Button>
+              <FacebookLogin/>
 
             </Form>
           </Col>

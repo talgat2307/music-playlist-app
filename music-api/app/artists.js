@@ -36,8 +36,7 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-router.post('/', [auth, permit('admin', 'user'), upload.single('image')],
-  async (req, res) => {
+router.post('/', [auth, permit('admin', 'user'), upload.single('image')], async (req, res) => {
     const artist = new Artist(req.body);
     if (req.file) {
       artist.image = req.file.filename;
@@ -54,6 +53,7 @@ router.post('/', [auth, permit('admin', 'user'), upload.single('image')],
 router.delete('/:id', [auth, permit('admin')], async (req, res) => {
   try {
     await Artist.findByIdAndDelete(req.params.id);
+    res.send({message: 'Success'});
   } catch (e) {
     res.status(403).send(e);
   }
@@ -61,13 +61,14 @@ router.delete('/:id', [auth, permit('admin')], async (req, res) => {
 
 router.put('/:id', [auth, permit('admin')], async (req, res) => {
   try {
-    await Artist.update({ _id: req.params.id },
+    await Artist.updateOne({ _id: req.params.id },
       {
         $set: {
           published: true,
         },
       },
     );
+    res.send({message: 'Success'})
   } catch (e) {
     res.send(e);
   }

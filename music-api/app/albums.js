@@ -56,6 +56,7 @@ router.post('/', [auth, permit('admin', 'user') ,upload.single('image')], async 
 router.delete('/:id', [auth, permit('admin')], async (req, res) => {
   try {
     await Album.findByIdAndDelete(req.params.id);
+    res.send({message: 'Success'});
   } catch (e) {
     res.status(403).send(e);
   }
@@ -63,13 +64,14 @@ router.delete('/:id', [auth, permit('admin')], async (req, res) => {
 
 router.put('/:id', [auth, permit('admin')], async (req, res) => {
   try {
-    await Album.update({ _id: req.params.id },
+    await Album.updateOne({ _id: req.params.id },
       {
         $set: {
           published: true,
         },
       },
     );
+    res.send({message: 'Success'})
   } catch (e) {
     res.send(e);
   }

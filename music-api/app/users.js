@@ -1,5 +1,22 @@
 const router = require('express').Router();
+const axios = require('axios');
+const { nanoid } = require('nanoid');
+const multer = require('multer');
+const path = require('path');
 const User = require('../model/User');
+const config = require('../config');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, config.uploadPath);
+  },
+  filename: (req, file, cb) => {
+    cb(null, nanoid() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
+
 
 router.get('/', async (req, res) => {
   try {
@@ -10,12 +27,19 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.post('/', async (req, res) => {
+router.post('/', upload.single('avatarImage'), async (req, res) => {
   try {
     const user = new User({
       username: req.body.username,
+      displayName: req.body.displayName,
+      email: req.body.email,
       password: req.body.password,
     });
+
+    if (req.file) {
+      user.avatarImage = req.file.filename
+    }
+
     user.generateToken();
     await user.save();
     res.send(user);
@@ -53,6 +77,42 @@ router.delete('/sessions', async (req, res) => {
   user.save({ validateBeforeSave: false });
 
   return res.send(success);
+});
+
+router.post('/facebookLogin', async (req, res) => {
+  const inputToken = req.body.accessToken;
+  const accessToken = config.fb.appId + '|' + config.fb.appSecret;
+  const debugTokenUrl = `https://graph.facebook.com/debug_token?input_token=${inputToken}&access_token=${accessToken}`;
+
+  try {
+    const response = await axios.get(debugTokenUrl);
+    if (response.data.data.error) {
+      return res.status(401).send({ message: 'Facebook token incorrect' });
+    }
+    if (req.body.id !== response.data.data.user_id) {
+      return res.status(401).send({ message: 'Wrong user ID' });
+    }
+
+    let user = await User.findOne({ facebookId: req.body.id });
+
+    if (!user) {
+      user = new User({
+        username: req.body.email,
+        password: nanoid(),
+        email: req.body.email,
+        facebookId: req.body.id,
+        displayName: req.body.name,
+        avatarImage: req.body.picture.data.url
+      });
+    }
+
+
+    user.generateToken();
+    await user.save({ validateBeforeSave: false });
+    res.send(user);
+  } catch (e) {
+    res.status(401).send({ message: 'Facebook token incorrect' });
+  }
 });
 
 module.exports = router;

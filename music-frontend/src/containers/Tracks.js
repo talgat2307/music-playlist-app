@@ -16,6 +16,7 @@ const Tracks = ({ location }) => {
   const artist = useSelector(state => state.artist.artist);
   const user = useSelector(state => state.user.userInfo);
 
+
   const params = new URLSearchParams(location.search);
   const queryId = params.get('album');
 
@@ -39,13 +40,64 @@ const Tracks = ({ location }) => {
 
   const deleteHandler = (id) => {
     dispatch(deleteSingleTrack(id));
-    dispatch(fetchTrackList(queryId));
   };
 
   const publishHandler = (id) => {
     dispatch(publishTrack(id));
-    dispatch(fetchTrackList(queryId));
   };
+
+  let trackPage;
+
+  if (user && user.role === 'admin') {
+    trackPage = (
+      <ul className='track'>
+        {tracks && tracks.map(track => {
+          return (
+            <li key={track._id}>
+              <p>
+                {track.number}. <strong onClick={() => clickHandler(
+                track._id)}>{track.name}</strong> {track.length} min
+              </p>
+              {track.published ?
+                <p className='published-track text-success'>Published</p>
+                :
+                <p className='published-track text-danger'>Unpublished</p>}
+              <>
+                <Button
+                  onClick={() => publishHandler(track._id)}
+                  className='track-publish-btn'
+                  variant='success'>Publish</Button>
+                <Button
+                  onClick={() => deleteHandler(track._id)}
+                  className='track-delete-btn'
+                  variant='danger'>Delete</Button>
+              </>
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+
+  if (user && user.role === 'user') {
+    trackPage = (
+      <>
+        {tracks && tracks.map(track => {
+          return (
+            <ul key={track._id} className='track'>
+              {track.published ?
+                <li key={track._id}>
+                  <p>
+                    {track.number}. <strong onClick={() => clickHandler(
+                    track._id)}>{track.name}</strong> {track.length} min
+                  </p>
+                </li> : ''}
+            </ul>
+          );
+        })}
+      </>
+    );
+  }
 
   return (
     <>
@@ -57,33 +109,7 @@ const Tracks = ({ location }) => {
             back to albums list</Link>
         </div>
       </div>
-      <ul className='track'>
-        {tracks && tracks.map(track => {
-          return (
-            <li key={track._id}>
-              <p>
-                {track.number}. <strong onClick={() => clickHandler(
-                track._id)}>{track.name}</strong> {track.length} min
-              </p>
-              {user && user.user.role === 'admin' ? track.published ?
-                <p className='published-track text-success'>Published</p>
-                :
-                <p className='published-track text-danger'>Unpublished</p> : ''}
-              {user && user.user.role === 'admin' ?
-                <>
-                  <Button
-                    onClick={() => publishHandler(track._id)}
-                    className='track-publish-btn'
-                    variant='success'>Publish</Button>
-                  <Button
-                    onClick={() => deleteHandler(track._id)}
-                    className='track-delete-btn'
-                    variant='danger'>Delete</Button>
-                </> : ''}
-            </li>
-          );
-        })}
-      </ul>
+      {trackPage}
     </>
   );
 };

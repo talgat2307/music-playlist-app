@@ -18,6 +18,18 @@ const UserSchema = new Schema({
       message: (props) => `User " ${props.value} " already exists`,
     },
   },
+  email: {
+    type: String,
+    required: [true, "Field email is required to fill"],
+    unique: true,
+    validate: {
+      validator: async (value) => {
+        const user = await User.findOne({email: value});
+        if (user) return false;
+      },
+      message: (props) => `Email ${props.value} already exists`
+    }
+  },
   password: {
     type: String,
     required: [true, 'Field password is required to fill'],
@@ -32,7 +44,17 @@ const UserSchema = new Schema({
     default: 'user',
     enum: ['user', 'admin'],
   },
+  facebookId: String,
+  displayName: {
+    type: String,
+    required: true
+  },
+  avatarImage: String
 });
+
+UserSchema.path("email").validate(value => {
+  return /^[\w-.]+@(\b[a-z-]+\b)[^-].[a-z]{2,10}$/g.test(value);
+}, "Enter correct email address");
 
 UserSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();

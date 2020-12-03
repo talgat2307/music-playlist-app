@@ -1,16 +1,13 @@
 import {
   ADD_ARTIST_FAILURE,
-  ADD_ARTIST_SUCCESS,
   ARTIST_FAILURE,
   ARTIST_LIST_FAILURE,
   ARTIST_LIST_REQUEST,
   ARTIST_LIST_SUCCESS,
   ARTIST_REQUEST,
   ARTIST_SUCCESS,
-  DELETE_ARTIST,
-  PUBLISH_ARTIST_SUCCESS,
+  DELETE_ARTIST, PUBLISH_ARTIST_SUCCESS,
 } from '../actionTypes';
-import { fetchArtistList } from '../actions/artistActions';
 
 const initialState = {
   loading: false,
@@ -35,6 +32,23 @@ const artistReducers = (state = initialState, action) => {
       return { ...state, error: action.error };
     case ADD_ARTIST_FAILURE:
       return { ...state, error: action.error };
+    case DELETE_ARTIST:
+      return {
+        ...state,
+        artistList: state.artistList.filter(artist => artist._id !== action.id),
+      };
+    case PUBLISH_ARTIST_SUCCESS:
+      const index = state.artistList.findIndex(
+        artist => artist._id === action.id);
+      if (index !== -1) {
+        const copyState = [...state.artistList];
+        const copyObj = { ...copyState[index] };
+        copyObj.published = true;
+        copyState[index] = copyObj;
+        return { ...state, artistList: copyState };
+      } else {
+        return state;
+      }
     default:
       return state;
   }

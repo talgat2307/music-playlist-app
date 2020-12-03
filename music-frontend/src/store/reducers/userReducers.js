@@ -23,7 +23,7 @@ const userReducers = (state = initialState, action) => {
     case USER_LOGIN_REQUEST:
       return { ...state, loading: false };
     case USER_LOGIN_SUCCESS:
-      return { ...state, loading: false, userInfo: action.userInfo };
+      return { ...state, loading: false, userInfo: action.user };
     case USER_LOGIN_FAILURE:
       return { ...state, loginError: action.error };
     case LOGOUT_USER:

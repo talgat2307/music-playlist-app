@@ -66,7 +66,7 @@ const addAlbumFailure = (error) => {
 export const addAlbum = (album) => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     try {
@@ -85,7 +85,7 @@ const deleteAlbum = (id) => {
 
 export const deleteSingleAlbum = (id) => {
   return async (dispatch, getState) => {
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     await axiosApi.delete(`/albums/${id}` , {headers});
@@ -93,16 +93,16 @@ export const deleteSingleAlbum = (id) => {
   };
 };
 
-const publishAlbumSuccess = () => {
-  return { type: PUBLISH_ALBUM_SUCCESS };
+const publishAlbumSuccess = (id) => {
+  return { type: PUBLISH_ALBUM_SUCCESS, id };
 };
 
 export const publishAlbum = (id) => {
   return async (dispatch, getState) => {
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     await axiosApi.put(`/albums/${id}`, {}, {headers});
-    dispatch(publishAlbumSuccess());
+    dispatch(publishAlbumSuccess(id));
   };
 };

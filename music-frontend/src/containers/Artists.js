@@ -12,43 +12,43 @@ const Artists = props => {
   const artists = useSelector(state => state.artist.artistList);
   const user = useSelector(state => state.user.userInfo);
 
+
   useEffect(() => {
     dispatch(fetchArtistList());
   }, [dispatch]);
 
   const deleteHandler = (id) => {
     dispatch(deleteSingleArtist(id));
-    dispatch(fetchArtistList());
   };
 
   const publishHandler = (id) => {
     dispatch(publishArtist(id));
-    dispatch(fetchArtistList());
   };
 
   const artistClickHandler = (id) => {
     props.history.push(`/albums?artist=${id}`);
   };
 
-  return (
-    <>
-      <h4 className='py-3'>List of artists</h4>
-      {artists && artists.map(artist => {
-        return (
-          <div
-            className='artist'
-            key={artist._id}
-          >
-            <img
-              onClick={() => artistClickHandler(artist._id)}
-              src={`http://localhost:8000/uploads/${artist.image}`}
-              alt="" width="90px" height='90px'/>
-            <h4>{artist.name}</h4>
-            {user && user.user.role === 'admin' ? artist.published ?
-              <p className='published text-success'>Published</p>
-              :
-              <p className='published text-danger'>Unpublished</p> : ''}
-            {user && user.user.role === 'admin' ?
+  let artistPage;
+
+  if (user && user.role === 'admin') {
+    artistPage = (
+      <>
+        {artists && artists.map(artist => {
+          return (
+            <div
+              className='artist'
+              key={artist._id}
+            >
+              <img
+                onClick={() => artistClickHandler(artist._id)}
+                src={`http://localhost:8000/uploads/${artist.image}`}
+                alt="" width="90px" height='90px'/>
+              <h4>{artist.name}</h4>
+              {artist.published ?
+                <p className='published text-success'>Published</p>
+                :
+                <p className='published text-danger'>Unpublished</p>}
               <div className='artist-btn'>
                 <Button
                   onClick={() => publishHandler(artist._id)}
@@ -56,10 +56,42 @@ const Artists = props => {
                 <Button
                   onClick={() => deleteHandler(artist._id)}
                   variant='danger'>Delete</Button>
-              </div> : ''}
-          </div>
-        );
-      })}
+              </div>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  if (user && user.role === 'user') {
+    artistPage = (
+      <>
+        {artists && artists.map(artist => {
+          return (
+            <div key={artist._id}>
+              {artist.published ?
+                <div
+                  className='artist'
+                  key={artist._id}
+                >
+                  <img
+                    onClick={() => artistClickHandler(artist._id)}
+                    src={`http://localhost:8000/uploads/${artist.image}`}
+                    alt="" width="90px" height='90px'/>
+                  <h4>{artist.name}</h4>
+                </div> : '' }
+            </div>
+          );
+        })}
+      </>
+    )
+  }
+
+  return (
+    <>
+      <h4 className='py-3'>List of artists</h4>
+      {artistPage}
     </>
   );
 };

@@ -64,7 +64,7 @@ const addTrackFailure = (error) => {
 export const addTrack = (track) => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     try {
@@ -84,7 +84,7 @@ const deleteTrack = (id) => {
 export const deleteSingleTrack = (id) => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     await axiosApi.delete(`/tracks/${id}`, { headers });
@@ -92,17 +92,17 @@ export const deleteSingleTrack = (id) => {
   };
 };
 
-const publishTrackSuccess = () => {
-  return { type: PUBLISH_TRACK_SUCCESS };
+const publishTrackSuccess = (id) => {
+  return { type: PUBLISH_TRACK_SUCCESS, id };
 };
 
 export const publishTrack = (id) => {
   return async (dispatch, getState) => {
 
-    const token = getState().user.userInfo.user.token;
+    const token = getState().user.userInfo.token;
     const headers = { 'Authorization': token };
 
     await axiosApi.put(`/tracks/${id}`, {}, { headers });
-    dispatch(publishTrackSuccess());
+    dispatch(publishTrackSuccess(id));
   };
 };

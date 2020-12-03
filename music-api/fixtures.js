@@ -98,11 +98,17 @@ db.once('open', async () => {
 
   await User.create({
     username: 'user',
+    displayName: 'user',
+    email: 'user@gmail.com',
     password: '001',
+    avatarImage: 'user.jpg',
     token: nanoid(),
     role: 'user'
   }, {
     username: 'admin',
+    displayName: 'admin',
+    email: 'admin@gmail.com',
+    avatarImage: 'admin.png',
     password: '001',
     token: nanoid(),
     role: 'admin'

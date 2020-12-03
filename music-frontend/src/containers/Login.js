@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { userLogin } from '../store/actions/userActions';
+import FacebookLogin from '../components/FacebookLogin/FacebookLogin';
 
 const Login = () => {
 
@@ -41,7 +42,7 @@ const Login = () => {
                 <Form.Control
                   type='text'
                   required={true}
-                  placeholder='Enter username'
+                  placeholder='Enter username or email'
                   name='username'
                   value={user.username}
                   onChange={(e) => inputChangeHandler(e)}
@@ -64,6 +65,7 @@ const Login = () => {
               <Button type='submit' variant='primary'>
                 Login
               </Button>
+              <FacebookLogin />
             </Form>
 
             <Row className='py-3'>

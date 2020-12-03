@@ -15,7 +15,7 @@ const postTrackHistoryFailure = (error) => {
 export const postTrackHistory = (trackHistory) => {
   return async (dispatch, getState) => {
     const headers = {
-      'Authorization': getState().user.userInfo && getState().user.userInfo.user.token
+      'Authorization': getState().user.userInfo && getState().user.userInfo.token
     };
     try {
       await axiosApi.post('/track_history', trackHistory, {headers} );
@@ -37,7 +37,7 @@ const trackHistoryFailure = (error) => {
 export const fetchTrackHistory = () => {
   return async (dispatch, getState) => {
     const headers = {
-      'Authorization': getState().user.userInfo && getState().user.userInfo.user.token
+      'Authorization': getState().user.userInfo && getState().user.userInfo.token
     };
     try {
       const response = await axiosApi('/track_history', {headers});

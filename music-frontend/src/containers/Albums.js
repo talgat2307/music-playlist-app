@@ -28,40 +28,34 @@ const Albums = ({ location, history }) => {
 
   const deleteHandler = (id) => {
     dispatch(deleteSingleAlbum(id));
-    dispatch(fetchAlbumList(queryId));
   };
 
   const publishHandler = (id) => {
     dispatch(publishAlbum(id));
-    dispatch(fetchAlbumList(queryId));
   };
 
-  return (
-    <>
-      <div className='albumHeader py-3'>
-        <h4>{artist ? artist.artist.name + " 's albums" : ''}</h4>
-        <div>
-          <Link className='btn btn-light' to='/'>Go back to artists list</Link>
-        </div>
-      </div>
-      {albums && albums.map(album => {
-        return (
-          <div
-            className='album'
-            key={album._id}
-          >
-            <img
-              onClick={() => albumClickHandler(album._id)}
-              src={`http://localhost:8000/uploads/${album.image}`}
-              alt="" width="100px"/>
-            <div>
-              <h4>{album.name}</h4>
-              <p>Released in <strong>{album.released_date}</strong></p>
-              {user && user.user.role === 'admin' ? album.published ?
-                <p className='published-album text-success'>Published</p>
-                :
-                <p className='published-album text-danger'>Unpublished</p> : ''}
-              {user && user.user.role === 'admin' ?
+  let albumPage;
+
+  if (user && user.role === 'admin') {
+    albumPage = (
+      <>
+        {albums && albums.map(album => {
+          return (
+            <div
+              className='album'
+              key={album._id}
+            >
+              <img
+                onClick={() => albumClickHandler(album._id)}
+                src={`http://localhost:8000/uploads/${album.image}`}
+                alt="" width="100px"/>
+              <div>
+                <h4>{album.name}</h4>
+                <p>Released in <strong>{album.released_date}</strong></p>
+                {album.published ?
+                  <p className='published-album text-success'>Published</p>
+                  :
+                  <p className='published-album text-danger'>Unpublished</p>}
                 <div className='album-btn'>
                   <Button
                     onClick={() => publishHandler(album._id)}
@@ -69,11 +63,51 @@ const Albums = ({ location, history }) => {
                   <Button
                     onClick={() => deleteHandler(album._id)}
                     variant='danger'>Delete</Button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </>
+    );
+  }
+
+  if (user && user.role === 'user') {
+    albumPage = (
+      <>
+        {albums && albums.map(album => {
+          return (
+            <div key={album._id}>
+              {album.published ?
+                <div
+                  className='album'
+                  key={album._id}
+                >
+                  <img
+                    onClick={() => albumClickHandler(album._id)}
+                    src={`http://localhost:8000/uploads/${album.image}`}
+                    alt="" width="100px"/>
+                  <div>
+                    <h4>{album.name}</h4>
+                    <p>Released in <strong>{album.released_date}</strong></p>
+                  </div>
                 </div> : ''}
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </>
+    );
+  }
+
+  return (
+    <>
+      <div className='albumHeader py-3'>
+        <h4>{artist ? artist.artist.name + ' \'s albums' : ''}</h4>
+        <div>
+          <Link className='btn btn-light' to='/'>Go back to artists list</Link>
+        </div>
+      </div>
+      {albumPage}
     </>
   );
 };
